@@ -15,7 +15,7 @@ installFrontend:
 	cd ./frontend/ && $(npm) install
 
 backendDev: 
-	cd ./backend/ && nodemon -e go --watch './**/*.go' --signal SIGTERM --exec 'go' run . --db ../data.db
+	cd ./backend/ && nodemon -e go --watch './**/*.go' --signal SIGTERM --exec 'go' run . 
 
 frontendDev:
 	cd ./frontend/ && $(npm) run dev

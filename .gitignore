@@ -3,3 +3,4 @@ frontend/.next
 backend/static
 frontend/out
 main
+node_modules
