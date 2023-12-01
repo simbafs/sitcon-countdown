@@ -55,7 +55,7 @@ export default function useRoom(id: number) {
 				body: JSON.stringify({
 					...room,
 					state: PAUSE,
-				})
+				}),
 			}).then(res => {
 				if (res.ok) updateRoom({ state: PAUSE })
 			})
@@ -71,14 +71,13 @@ export default function useRoom(id: number) {
 					...room,
 					time: room.inittime,
 					state: PAUSE,
-				})
+				}),
 			}).then(res => {
 				if (res.ok) {
 					updateRoom({
 						time: room.inittime,
 						state: PAUSE,
 					})
-
 				}
 			})
 		},

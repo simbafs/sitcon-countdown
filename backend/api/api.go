@@ -52,16 +52,17 @@ func timer(quit chan struct{}, io websocket.IO) {
 				room.Time -= 1
 				if room.Time <= 0{
 					room.State = PAUSE
+					room.Time = 0
 				}
 
 				rooms[i] = room
 			}
 			// log.Printf("%#v\n", rooms )
-			data, err := json.Marshal(rooms)
-			// data, err := json.Marshal(gin.H{
-			// 	"rooms": rooms,
-			// 	"serverTime": time.Now(),
-			// })
+			// data, err := json.Marshal(rooms)
+			data, err := json.Marshal(gin.H{
+				"rooms": rooms,
+				"serverTime": time.Now(),
+			})
 			if err != nil {
 				log.Println(err)
 				continue
@@ -77,12 +78,6 @@ func timer(quit chan struct{}, io websocket.IO) {
 
 func Route(r *gin.Engine, io websocket.IO) {
 	api := r.Group("/api")
-
-	api.GET("/time", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"time": time.Now(),
-		})
-	})
 
 	api.GET("/room", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

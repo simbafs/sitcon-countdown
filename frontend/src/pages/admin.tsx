@@ -1,9 +1,8 @@
-import useTime from '@/hooks/useTime'
 import useRoom, { type Room, type RoomData } from '@/hooks/useRoom'
 import Btn from '@/components/Btn'
 import Time from '@/components/Time'
 import useWebSocket from 'react-use-websocket'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function Row({ name, room }: { name: string; room: Room }) {
 	return (
@@ -28,15 +27,17 @@ function Row({ name, room }: { name: string; room: Room }) {
 	)
 }
 
-function formatTime(time: Date) {
+function formatTime(time: number) {
+	const timeO = new Date(time)
 	function to2(n: number) {
 		if (n < 10) return '0' + n
 		else return '' + n
 	}
-	return `${to2(time.getHours())}:${to2(time.getMinutes())}:${to2(time.getSeconds())}`
+	return `${to2(timeO.getHours())}:${to2(timeO.getMinutes())}:${to2(timeO.getSeconds())}`
 }
 
 export default function Page() {
+	const [time, setTime] = useState(0)
 	const room0 = useRoom(0)
 	const room1 = useRoom(1)
 	const room2 = useRoom(2)
@@ -45,18 +46,18 @@ export default function Page() {
 
 	const rooms = [room0, room1, room2, room3, room4]
 
-	const time = useTime()
 	const { lastMessage } = useWebSocket('ws://localhost:3000/ws', {
 		shouldReconnect: () => true,
 	})
-	//
+
 	// update room with pooling or websocket
 	useEffect(() => {
 		if (!lastMessage) return
-		const data = JSON.parse(lastMessage.data) as RoomData[]
-		for (let i in data) {
-			rooms[i].updateRoom(data[i])
+		const data = JSON.parse(lastMessage.data) as { rooms: RoomData[]; serverTime: number }
+		for (let i in data.rooms) {
+			rooms[i].updateRoom(data.rooms[i])
 		}
+		setTime(data.serverTime)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [lastMessage])
 
