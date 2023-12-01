@@ -1,4 +1,5 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer } from 'react'
+import useWebSocket from 'react-use-websocket'
 
 export const PAUSE = 0
 export const COUNTING = 1
@@ -25,6 +26,9 @@ export default function useRoom(id: number) {
 			state: 0,
 		}
 	)
+	const { lastMessage } = useWebSocket('ws://localhost:3000/ws', {
+		shouldReconnect: () => true,
+	})
 
 	// init room
 	useEffect(() => {
@@ -35,6 +39,12 @@ export default function useRoom(id: number) {
 	}, [id])
 
 	// update room with pooling or websocket
+	useEffect(() => {
+		if (!lastMessage) return
+		const room = JSON.parse(lastMessage.data)[id]
+		updateRoom(room)
+		console.log(id, room)
+	}, [lastMessage, id])
 
 	return {
 		...room,

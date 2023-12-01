@@ -35,7 +35,7 @@ func init() {
 		}
 	}
 
-	rooms[0].Time = 10
+	rooms[0].Time = 10000000
 	rooms[0].State = COUNTING
 }
 
