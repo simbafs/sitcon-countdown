@@ -55,8 +55,8 @@ export default function useRoom(id: number) {
 					...room,
 					state: COUNTING,
 				}),
-			}).then(res => {
-				if (res.ok) updateRoom({ state: COUNTING })
+			// }).then(res => {
+			// 	if (res.ok) updateRoom({ state: COUNTING })
 			})
 		},
 		pause() {
@@ -66,8 +66,8 @@ export default function useRoom(id: number) {
 					...room,
 					state: PAUSE,
 				})
-			}).then(res => {
-				if (res.ok) updateRoom({ state: PAUSE })
+			// }).then(res => {
+			// 	if (res.ok) updateRoom({ state: PAUSE })
 			})
 		},
 		setTime(n: number) {
@@ -82,14 +82,14 @@ export default function useRoom(id: number) {
 					time: room.inittime,
 					state: PAUSE,
 				})
-			}).then(res => {
-				if (res.ok) {
-					updateRoom({
-						time: room.inittime,
-						state: PAUSE,
-					})
-
-				}
+			// }).then(res => {
+			// 	if (res.ok) {
+			// 		updateRoom({
+			// 			time: room.inittime,
+			// 			state: PAUSE,
+			// 		})
+			//
+			// 	}
 			})
 		},
 	}
