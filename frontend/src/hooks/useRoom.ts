@@ -6,7 +6,7 @@ export const COUNTING = 1
 
 export type State = typeof PAUSE | typeof COUNTING
 
-type room = {
+export type RoomData = {
 	inittime: number
 	time: number
 	state: State
@@ -14,7 +14,7 @@ type room = {
 
 export default function useRoom(id: number) {
 	const [room, updateRoom] = useReducer(
-		(state: room, action: Partial<room>) => {
+		(state: RoomData, action: Partial<RoomData>) => {
 			return {
 				...state,
 				...action,
@@ -26,9 +26,6 @@ export default function useRoom(id: number) {
 			state: 0,
 		}
 	)
-	const { lastMessage } = useWebSocket('ws://localhost:3000/ws', {
-		shouldReconnect: () => true,
-	})
 
 	// init room
 	useEffect(() => {
@@ -38,16 +35,9 @@ export default function useRoom(id: number) {
 			.catch(console.error)
 	}, [id])
 
-	// update room with pooling or websocket
-	useEffect(() => {
-		if (!lastMessage) return
-		const room = JSON.parse(lastMessage.data)[id]
-		updateRoom(room)
-		console.log(id, room)
-	}, [lastMessage, id])
-
 	return {
 		...room,
+		updateRoom,
 		start() {
 			fetch(`/api/room/${id}`, {
 				method: 'post',

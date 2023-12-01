@@ -1,7 +1,9 @@
 import useTime from '@/hooks/useTime'
-import useRoom, { type Room } from '@/hooks/useRoom'
+import useRoom, { type Room, type RoomData } from '@/hooks/useRoom'
 import Btn from '@/components/Btn'
 import Time from '@/components/Time'
+import useWebSocket from 'react-use-websocket'
+import { useEffect } from 'react'
 
 function Row({ name, room }: { name: string; room: Room }) {
 	return (
@@ -41,7 +43,22 @@ export default function Page() {
 	const room3 = useRoom(3)
 	const room4 = useRoom(4)
 
+	const rooms = [room0, room1, room2, room3, room4]
+
 	const time = useTime()
+	const { lastMessage } = useWebSocket('ws://localhost:3000/ws', {
+		shouldReconnect: () => true,
+	})
+	//
+	// update room with pooling or websocket
+	useEffect(() => {
+		if (!lastMessage) return
+		const data = JSON.parse(lastMessage.data) as RoomData[]
+		for (let i in data) {
+			rooms[i].updateRoom(data[i])
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lastMessage])
 
 	return (
 		<div className="min-h-screen w-screen py-[100px] px-[50px] lg:px-[100px] flex flex-col justify-center items-center">

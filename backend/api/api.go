@@ -58,6 +58,10 @@ func timer(quit chan struct{}, io websocket.IO) {
 			}
 			// log.Printf("%#v\n", rooms )
 			data, err := json.Marshal(rooms)
+			// data, err := json.Marshal(gin.H{
+			// 	"rooms": rooms,
+			// 	"serverTime": time.Now(),
+			// })
 			if err != nil {
 				log.Println(err)
 				continue
