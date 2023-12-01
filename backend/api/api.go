@@ -2,6 +2,7 @@ package api
 
 import (
 	"backend/pkg/websocket"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -22,12 +23,12 @@ type Room struct {
 
 var data = make([]Room, 4)
 
-func init(){
+func init() {
 	for i := 0; i < 4; i++ {
 		data[i] = Room{
 			Inittime: 10,
-			Time: 0,
-			State: PAUSE,
+			Time:     0,
+			State:    PAUSE,
 		}
 	}
 }
@@ -35,13 +36,13 @@ func init(){
 func Route(r *gin.Engine, io websocket.IO) {
 	api := r.Group("/api")
 
-	api.GET("/time", func(c *gin.Context){
+	api.GET("/time", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"time": time.Now(),
 		})
 	})
 
-	api.GET("/room", func(c *gin.Context){
+	api.GET("/room", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"rooms": data,
 		})
@@ -53,7 +54,7 @@ func Route(r *gin.Engine, io websocket.IO) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "failed to parse room id",
 			})
-			return 
+			return
 		}
 
 		if id >= len(data) || id < 0 {
@@ -61,28 +62,63 @@ func Route(r *gin.Engine, io websocket.IO) {
 				"error": "id is out of range",
 			})
 
-			return 
+			return
 		}
 
 		room := data[id]
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"room": room,
 		})
 	})
 
-	api.GET("/hello", func(c *gin.Context) {
+	api.POST("/room/:id", func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "failed to parse room id",
+			})
+			return
+		}
+
+		if id >= len(data) || id < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "id is out of range",
+			})
+
+			return
+		}
+
+		room := Room{}
+
+		if err := c.BindJSON(&room); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return 
+		}
+
+		log.Printf("update room %d to %#v\n",id, room )
+
+		data[id] = room
+
 		c.JSON(http.StatusOK, gin.H{
-			"status":  "ok",
-			"message": "Hello, world!",
+			"message": "success update room",
 		})
 	})
 
-	api.GET("/broadcast", func(c *gin.Context) {
-		io.Broadcast([]byte("Hello, world!"))
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "ok",
-			"message": "Broadcasted!",
-		})
-	})
+	// api.GET("/hello", func(c *gin.Context) {
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"status":  "ok",
+	// 		"message": "Hello, world!",
+	// 	})
+	// })
+	//
+	// api.GET("/broadcast", func(c *gin.Context) {
+	// 	io.Broadcast([]byte("Hello, world!"))
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"status":  "ok",
+	// 		"message": "Broadcasted!",
+	// 	})
+	// })
 }
