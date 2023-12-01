@@ -15,16 +15,18 @@ const (
 	COUNTING
 )
 
+const  N = 5
+
 type Room struct {
 	Inittime int `json:"inittime"`
 	Time     int `json:"time"`
 	State    int `json:"state"`
 }
 
-var data = make([]Room, 4)
+var data = make([]Room, N)
 
 func init() {
-	for i := 0; i < 4; i++ {
+	for i := 0; i < N; i++ {
 		data[i] = Room{
 			Inittime: 10,
 			Time:     0,

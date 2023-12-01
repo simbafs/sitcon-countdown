@@ -7,15 +7,15 @@ export default function useTime() {
 		fetch('/api/time')
 			.then(res => res.json())
 			.then(setTime)
-		.catch(console.error)
+			.catch(console.error)
 	}
 
 	useEffect(() => {
-	    updateTime()
-	    const i = setInterval(updateTime, 500)
-	    return () => {
-	        clearInterval(i)
-	    }
+		updateTime()
+		const i = setInterval(updateTime, 500)
+		return () => {
+			clearInterval(i)
+		}
 	}, [])
 
 	return new Date(time?.time || '')
