@@ -2,6 +2,7 @@ package api
 
 import (
 	"backend/pkg/websocket"
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,7 +16,7 @@ const (
 	COUNTING
 )
 
-const  N = 5
+const N = 5
 
 type Room struct {
 	Inittime int `json:"inittime"`
@@ -23,14 +24,49 @@ type Room struct {
 	State    int `json:"state"`
 }
 
-var data = make([]Room, N)
+var rooms = make([]Room, N)
 
 func init() {
 	for i := 0; i < N; i++ {
-		data[i] = Room{
+		rooms[i] = Room{
 			Inittime: 10,
 			Time:     0,
 			State:    PAUSE,
+		}
+	}
+
+	rooms[0].Time = 10
+	rooms[0].State = COUNTING
+}
+
+func timer(quit chan struct{}, io websocket.IO) {
+	tricker := time.NewTicker(1 * time.Second)
+	for {
+		select {
+		case <-tricker.C:
+			for i, room := range rooms {
+				if room.State == PAUSE {
+					continue
+				}
+
+				room.Time -= 1
+				if room.Time <= 0{
+					room.State = PAUSE
+				}
+
+				rooms[i] = room
+			}
+			// log.Printf("%#v\n", rooms )
+			data, err := json.Marshal(rooms)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
+			io.Broadcast(data)
+		case <-quit:
+			tricker.Stop()
+			return
 		}
 	}
 }
@@ -46,7 +82,7 @@ func Route(r *gin.Engine, io websocket.IO) {
 
 	api.GET("/room", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"rooms": data,
+			"rooms": rooms,
 		})
 	})
 
@@ -59,7 +95,7 @@ func Route(r *gin.Engine, io websocket.IO) {
 			return
 		}
 
-		if id >= len(data) || id < 0 {
+		if id >= len(rooms) || id < 0 {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "id is out of range",
 			})
@@ -67,7 +103,7 @@ func Route(r *gin.Engine, io websocket.IO) {
 			return
 		}
 
-		room := data[id]
+		room := rooms[id]
 
 		c.JSON(http.StatusOK, gin.H{
 			"room": room,
@@ -83,7 +119,7 @@ func Route(r *gin.Engine, io websocket.IO) {
 			return
 		}
 
-		if id >= len(data) || id < 0 {
+		if id >= len(rooms) || id < 0 {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "id is out of range",
 			})
@@ -97,17 +133,20 @@ func Route(r *gin.Engine, io websocket.IO) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
-			return 
+			return
 		}
 
-		log.Printf("update room %d to %#v\n",id, room )
+		log.Printf("update room %d to %#v\n", id, room)
 
-		data[id] = room
+		rooms[id] = room
 
 		c.JSON(http.StatusOK, gin.H{
 			"message": "success update room",
 		})
 	})
+
+	quit := make(chan struct{})
+	go timer(quit, io)
 
 	// api.GET("/hello", func(c *gin.Context) {
 	// 	c.JSON(http.StatusOK, gin.H{
