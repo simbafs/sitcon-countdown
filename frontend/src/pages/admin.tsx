@@ -10,7 +10,7 @@ function Row({ name, room }: { name: string; room: Room }) {
 		<div className="grid gap-4 grid-cols-1 lg:grid-cols-[2fr_4fr]">
 			<div className="grid grid-cols-2 gap-6">
 				<h2 className="text-center text-3xl">{name}</h2>
-				<Time time={room.time} setTime={room.setTime} state={room.state} />
+				<Time room={room}/>
 			</div>
 			<div className="grid grid-cols-4 gap-6">
 				<Btn onClick={room.start} color={'green'}>

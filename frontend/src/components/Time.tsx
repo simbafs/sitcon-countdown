@@ -1,13 +1,15 @@
-import { type State, COUNTING } from '@/hooks/useRoom'
+import { COUNTING, type Room } from '@/hooks/useRoom'
 
-export default function Time({ time, setTime, state }: { time: number; setTime: (n: number) => void; state: State }) {
+export default function Time({ room }: { room: Room }) {
 	return (
 		<input
 			type="number"
-			value={time}
+			readOnly={room.state === COUNTING ? true : false}
+			value={room.time}
 			onChange={e => {
-				if (state === COUNTING) return
-				setTime(e.target.valueAsNumber)
+				if (room.state === COUNTING) return
+
+				room.setTime(e.target.valueAsNumber)
 			}}
 		/>
 	)
