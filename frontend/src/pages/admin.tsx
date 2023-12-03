@@ -3,6 +3,7 @@ import Btn from '@/components/Btn'
 import Time from '@/components/Time'
 import useWebSocket from 'react-use-websocket'
 import { useEffect, useState } from 'react'
+import useWsHost from '@/hooks/useWsHost'
 
 function Row({ name, room }: { name: string; room: Room }) {
 	return (
@@ -46,7 +47,7 @@ export default function Page() {
 
 	const rooms = [room0, room1, room2, room3, room4]
 
-	const { lastMessage } = useWebSocket('ws://localhost:3000/ws', {
+	const { lastMessage } = useWebSocket(useWsHost(), {
 		shouldReconnect: () => true,
 	})
 

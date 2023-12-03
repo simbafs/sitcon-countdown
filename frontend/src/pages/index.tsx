@@ -1,10 +1,11 @@
 import useQuery from '@/hooks/useQuery'
 import { type RoomData } from '@/hooks/useRoom'
+import useWsHost from '@/hooks/useWsHost'
 import useWebSocket from 'react-use-websocket'
 
 export default function Home() {
 	const roomid = useQuery('id')[0]
-	const { lastMessage } = useWebSocket('ws://localhost:3000/ws', {
+	const { lastMessage } = useWebSocket(useWsHost(), {
 		shouldReconnect: () => true,
 	})
 
