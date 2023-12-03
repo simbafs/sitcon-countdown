@@ -10,7 +10,7 @@ export default function Home() {
 
 	function getTime(msg: MessageEvent, roomid: number) {
 		const data = JSON.parse(msg.data) as { rooms: RoomData[]; serverTime: number }
-		return data.rooms[roomid].time
+		return data.rooms[roomid]?.time
 	}
 
 	if (!roomid || isNaN(+roomid)) {
@@ -21,12 +21,13 @@ export default function Home() {
 		)
 	}
 
-	if (!lastMessage)
+	if (!lastMessage) {
 		return (
 			<>
 				<h1>Loading...</h1>
 			</>
 		)
+	}
 
 	return (
 		<>
