@@ -1,29 +1,54 @@
-import useRoom, { type Room, type RoomData } from '@/hooks/useRoom'
-import Btn from '@/components/Btn'
+import useRoom, { COUNTING, PAUSE, type Room, type RoomData } from '@/hooks/useRoom'
 import Time from '@/components/Time'
 import useWebSocket from 'react-use-websocket'
 import { useEffect, useState } from 'react'
 import useWsHost from '@/hooks/useWsHost'
+import { btn } from '@/varients/btn'
+import Link from 'next/link'
+import SetTime from '@/components/setTime'
 
 function Row({ name, room }: { name: string; room: Room }) {
+	const [open, setOpen] = useState(false)
 	return (
 		<div className="grid gap-4 grid-cols-1 lg:grid-cols-[2fr_4fr]">
 			<div className="grid grid-cols-2 gap-6">
 				<h2 className="text-center text-3xl">{name}</h2>
-				<Time room={room}/>
+				<Time room={room} />
 			</div>
-			<div className="grid grid-cols-4 gap-6">
-				<Btn onClick={room.start} color={'green'}>
+			<div className="grid grid-cols-5 gap-6">
+				<button
+					className={btn({ color: room.state === PAUSE ? 'green' : 'normal' })}
+					onClick={room.start}
+					disabled={room.state === COUNTING}
+				>
 					開始
-				</Btn>
-				<Btn onClick={room.pause} color={'red'}>
+				</button>
+				<button
+					className={btn({ color: room.state === COUNTING ? 'red' : 'normal' })}
+					onClick={room.pause}
+					disabled={room.state === PAUSE}
+				>
 					暫停
-				</Btn>
-				<Btn onClick={room.reset} color={'yellow'}>
+				</button>
+				<button
+					className={btn({ color: 'yellow' })}
+					onClick={room.reset}
+				>
 					重設
-				</Btn>
-				<Btn onClick={() => {}}>開啟頁面</Btn>
+				</button>
+				<button
+					className={btn({ color: 'yellow' })}
+					onClick={() => setOpen(true)}
+				>設定時間</button>
+				<Link
+					className={btn()}
+					href={`/?id=${room.id}`}
+					target='_blank'
+				>
+					開啟頁面
+				</Link>
 			</div>
+			{open && <SetTime room={room} close={() => setOpen(false)} />}
 		</div>
 	)
 }

@@ -37,6 +37,7 @@ export default function useRoom(id: number) {
 
 	return {
 		...room,
+		id,
 		updateRoom,
 		start() {
 			fetch(`/api/room/${id}`, {
@@ -63,6 +64,14 @@ export default function useRoom(id: number) {
 		setTime(n: number) {
 			if (room.state !== PAUSE) return
 			room.time = room.inittime = n
+			fetch(`/api/room/${id}`, {
+				method: 'post',
+				body: JSON.stringify({
+					...room,
+					time: n,
+					inittime: n,
+				})
+			})
 		},
 		reset() {
 			fetch(`/api/room/${id}`, {
