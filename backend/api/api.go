@@ -29,14 +29,11 @@ var rooms = make([]Room, N)
 func init() {
 	for i := 0; i < N; i++ {
 		rooms[i] = Room{
-			Inittime: 10,
+			Inittime: 60,
 			Time:     0,
 			State:    PAUSE,
 		}
 	}
-
-	rooms[0].Time = 10000000
-	// rooms[0].State = COUNTING
 }
 
 func timer(quit chan struct{}, io websocket.IO) {
@@ -50,7 +47,7 @@ func timer(quit chan struct{}, io websocket.IO) {
 				}
 
 				room.Time -= 1
-				if room.Time <= 0{
+				if room.Time <= 0 {
 					room.State = PAUSE
 					room.Time = 0
 				}
@@ -60,7 +57,7 @@ func timer(quit chan struct{}, io websocket.IO) {
 			// log.Printf("%#v\n", rooms )
 			// data, err := json.Marshal(rooms)
 			data, err := json.Marshal(gin.H{
-				"rooms": rooms,
+				"rooms":      rooms,
 				"serverTime": time.Now(),
 			})
 			if err != nil {

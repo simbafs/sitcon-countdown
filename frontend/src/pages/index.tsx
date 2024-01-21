@@ -1,6 +1,7 @@
 import useQuery from '@/hooks/useQuery'
 import { type RoomData } from '@/hooks/useRoom'
 import useWsHost from '@/hooks/useWsHost'
+import toTime from '@/utils/toTime'
 import useWebSocket from 'react-use-websocket'
 
 export default function Home() {
@@ -11,7 +12,7 @@ export default function Home() {
 
 	function getTime(msg: MessageEvent, roomid: number) {
 		const data = JSON.parse(msg.data) as { rooms: RoomData[]; serverTime: number }
-		return data.rooms[roomid]?.time
+		return toTime(data.rooms[roomid]?.time)
 	}
 
 	if (!roomid || isNaN(+roomid)) {
@@ -30,9 +31,5 @@ export default function Home() {
 		)
 	}
 
-	return (
-		<>
-			<h1 className="text-[50vw] leading-[0.8]">{getTime(lastMessage, +roomid)}</h1>
-		</>
-	)
+	return <h1 className="text-[35vw] leading-[0.8]">{getTime(lastMessage, +roomid)}</h1>
 }

@@ -1,11 +1,11 @@
 import useRoom, { COUNTING, PAUSE, type Room, type RoomData } from '@/hooks/useRoom'
-import Time from '@/components/Time'
 import useWebSocket from 'react-use-websocket'
 import { useEffect, useState } from 'react'
 import useWsHost from '@/hooks/useWsHost'
 import { btn } from '@/varients/btn'
 import Link from 'next/link'
 import SetTime from '@/components/setTime'
+import toTime from '@/utils/toTime'
 
 function Row({ name, room }: { name: string; room: Room }) {
 	const [open, setOpen] = useState(false)
@@ -13,7 +13,7 @@ function Row({ name, room }: { name: string; room: Room }) {
 		<div className="grid gap-4 grid-cols-1 lg:grid-cols-[2fr_4fr]">
 			<div className="grid grid-cols-2 gap-6">
 				<h2 className="text-center text-3xl">{name}</h2>
-				<Time room={room} />
+				<p>{toTime(room.time)}</p>
 			</div>
 			<div className="grid grid-cols-5 gap-6">
 				<button
@@ -30,21 +30,13 @@ function Row({ name, room }: { name: string; room: Room }) {
 				>
 					暫停
 				</button>
-				<button
-					className={btn({ color: 'yellow' })}
-					onClick={room.reset}
-				>
+				<button className={btn({ color: 'yellow' })} onClick={room.reset}>
 					重設
 				</button>
-				<button
-					className={btn({ color: 'yellow' })}
-					onClick={() => setOpen(true)}
-				>設定時間</button>
-				<Link
-					className={btn()}
-					href={`/?id=${room.id}`}
-					target='_blank'
-				>
+				<button className={btn({ color: 'yellow' })} onClick={() => setOpen(true)}>
+					設定時間
+				</button>
+				<Link className={btn()} href={`/?id=${room.id}`} target="_blank">
 					開啟頁面
 				</Link>
 			</div>
@@ -90,11 +82,11 @@ export default function Page() {
 	return (
 		<div className="min-h-screen w-screen py-[100px] px-[50px] lg:px-[100px] flex flex-col justify-center items-center">
 			<div className="w-full grid gap-[50px]">
-				<Row name="room0" room={room0} />
-				<Row name="room1" room={room1} />
-				<Row name="room2" room={room2} />
-				<Row name="room3" room={room3} />
-				<Row name="room4" room={room4} />
+				<Row name="Room 0" room={room0} />
+				<Row name="Room 1" room={room1} />
+				<Row name="Room 2" room={room2} />
+				<Row name="Room 3" room={room3} />
+				<Row name="Room 4" room={room4} />
 			</div>
 			<h1 className="mt-10 text-2xl">現在時間: {formatTime(time)}</h1>
 		</div>

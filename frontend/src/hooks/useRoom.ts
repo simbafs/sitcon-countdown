@@ -24,7 +24,7 @@ export default function useRoom(id: number) {
 			inittime: 10,
 			time: 0,
 			state: 0,
-		}
+		},
 	)
 
 	// init room
@@ -70,7 +70,7 @@ export default function useRoom(id: number) {
 					...room,
 					time: n,
 					inittime: n,
-				})
+				}),
 			})
 		},
 		reset() {
