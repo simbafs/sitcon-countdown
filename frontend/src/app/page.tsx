@@ -1,3 +1,4 @@
+"use client"
 import useQuery from '@/hooks/useQuery'
 import { type RoomData } from '@/hooks/useRoom'
 import useWsHost from '@/hooks/useWsHost'

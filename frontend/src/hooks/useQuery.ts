@@ -1,13 +1,12 @@
-import { useRouter } from 'next/router'
+"use client"
+import { useSearchParams } from 'next/navigation'
 
 export default function useQuery(key: string) {
-	const router = useRouter()
+	const param = useSearchParams()
 
-	let value = router.query[key]
+	let value = param.get(key)
 
-	if (!value) return []
-
-	if (!Array.isArray(value)) value = [value]
+	if (!value) return ''
 
 	return value
 }

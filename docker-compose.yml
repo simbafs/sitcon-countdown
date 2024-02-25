@@ -1,0 +1,8 @@
+version: '3'
+services: 
+  app: 
+    image: simbafs/sitcon_countdown:v1.0.0
+    container_name: sitcon_countdown
+    ports: 
+    - 3000:3000
+    restart: always
