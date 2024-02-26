@@ -34,7 +34,6 @@ export default function Page() {
 
 	if (!data) return <h1>Loading...</h1>
 
-	// return <pre>{JSON.stringify(data, null, 2)}</pre>
 	return (
 		<div className="flex flex-col gap-4">
 			<h2 className="text-[8vw]">{data.type}</h2>

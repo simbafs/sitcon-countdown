@@ -2,12 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type='number']::-webkit-outer-spin-button,
-input[type='number']::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
-}
+/* input[type='number']::-webkit-outer-spin-button, */
+/* input[type='number']::-webkit-inner-spin-button { */
+/* 	-webkit-appearance: none; */
+/* 	margin: 0; */
+/* } */
+/**/
+/* input[type='number'] { */
+/* 	-moz-appearance: textfield; */
+/* } */
 
-input[type='number'] {
-	-moz-appearance: textfield;
+/* Load font at /GenSenRounded-H.ttc */
+@font-face {
+	font-family: "GenSenRounded-H";
+	font-style: normal;
+	font-weight: 700;
+	src: url('/GenSenRoundedTW-H-01.ttf') format('truetype');
+}
+@layer base {
+	html {
+		font-family: 'GenSenRounded-H', sans-serif;
+		font-weight: 700;
+		font-style: normal;
+	}
 }
