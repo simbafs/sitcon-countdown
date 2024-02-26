@@ -22,12 +22,14 @@ type input struct {
 }
 
 type Session struct {
-	Id    string `json:"id"`
-	Type  string `json:"type"`
-	Room  string `json:"room"`
-	Start string `json:"start"`
-	End   string `json:"end"`
-	Zh    struct {
+	Id        string    `json:"id"`
+	Type      string    `json:"type"`
+	Room      string    `json:"room"`
+	Start     string    `json:"start"`
+	StartTime time.Time `json:"-"`
+	EndTime   time.Time `json:"-"`
+	End       string    `json:"end"`
+	Zh        struct {
 		Title string `json:"title"`
 	} `json:"zh"`
 	Speakers []string `json:"speakers"`
@@ -59,20 +61,23 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 			s.Sessions[sessionId].Speakers[speakerId] = speakers[speaker]
 		}
 
-		// start
+		// parse start time
 		start, err := time.Parse(layout, session.Start)
 		if err != nil {
 			return nil, err
 		}
 		s.Sessions[sessionId].Start = start.Format("15:04")
+		s.Sessions[sessionId].StartTime = start
 
+		// parse end time
 		end, err := time.Parse(layout, session.End)
 		if err != nil {
 			return nil, err
 		}
 		s.Sessions[sessionId].End = end.Format("15:04")
+		s.Sessions[sessionId].EndTime = end
 
-		// type
+		// session type
 		t, ok := typeString[session.Type]
 		if !ok {
 			t = session.Type

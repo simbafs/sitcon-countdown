@@ -67,12 +67,43 @@ function Session({ session, setEditor }: { session: TSession; setEditor: setEdit
 			<GridCell>{session.zh.title}</GridCell>
 			<GridCell>
 				<ul className="list-disc pl-6 w-full">
-				{session.speakers.map(speaker => <li key={speaker} className="text-left w-full">{speaker}</li>)}
+					{session.speakers.map(speaker => <li key={speaker} className="text-left w-full">{speaker}</li>)}
 				</ul>
 			</GridCell>
 		</>
 	)
 	// return <pre>{JSON.stringify(session, null, 2)}</pre>
+}
+
+function sortFn(a: TSession, b: TSession) {
+	const byStartTime = (a: TSession, b: TSession) => {
+		if (a.start < b.start) return -1
+		if (a.start > b.start) return 1
+		return 0
+	}
+
+	const byEndTime = (a: TSession, b: TSession) => {
+		if (a.end < b.end) return -1
+		if (a.end > b.end) return 1
+		return 0
+	}
+
+	const byRoom = (a: TSession, b: TSession) => {
+		if (a.room < b.room) return -1
+		if (a.room > b.room) return 1
+		return 0
+	}
+
+	const room = byRoom(a, b)
+	if (room) return room
+
+	const start = byStartTime(a, b)
+	if (start) return start
+
+	const end = byEndTime(a, b)
+	if (end) return end
+
+	return 0
 }
 
 export default function Page() {
@@ -101,7 +132,7 @@ export default function Page() {
 				<GridCell>End</GridCell>
 				<GridCell>Title</GridCell>
 				<GridCell>Speakers</GridCell>
-				{Object.values(data).map(session => (
+				{Object.values(data).sort(sortFn).map(session => (
 					<Session key={session.id} session={session} setEditor={setEditor} />
 				))}
 			</div>
