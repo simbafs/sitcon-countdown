@@ -15,8 +15,8 @@ export function useEditTime() {
 
     const Editor = () => {
         const time = value.split(':').map(Number)
-        const [min, setMin] = useState(time[0])
-        const [sec, setSec] = useState(time[1])
+        const [hour, setHour] = useState(time[0])
+        const [min, setMin] = useState(time[1])
 
         // on esc pressed, close the editor
         useEffect(() => {
@@ -36,8 +36,8 @@ export function useEditTime() {
                 onClick={e => e.stopPropagation()}
                 onSubmit={e => {
                     e.preventDefault()
-                    const m = min || 0
-                    const s = sec || 0
+                    const m = hour || 0
+                    const s = min || 0
                     close?.(`${to2(m + Math.floor(s / 60))}:${to2(s % 60)}`)
                 }}
             >
@@ -46,14 +46,14 @@ export function useEditTime() {
                     <input
                         className="w-full border-gray-500 border-2 rounded-lg p-1 outline-none focus:border-blue-500"
                         type="number"
-                        value={min}
-                        onChange={e => setMin(e.target.valueAsNumber)}
+                        value={to2(hour) || ''}
+                        onChange={e => setHour(e.target.valueAsNumber)}
                     />:
                     <input
                         className="w-full border-gray-500 border-2 rounded-lg p-1 outline-none focus:border-blue-500"
                         type="number"
-                        value={sec}
-                        onChange={e => setSec(e.target.valueAsNumber)}
+                        value={to2(min) || ''}
+                        onChange={e => setMin(e.target.valueAsNumber)}
                     />
                 </div>
                 <div className="flex gap-4 w-full">
