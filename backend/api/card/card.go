@@ -10,6 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func Include(list []string, item string) bool {
+	for _, i := range list {
+		if i == item {
+			return true
+		}
+	}
+
+	return false
+}
+
 type Time struct {
 	Start string `json:"start"`
 	End   string `json:"end"`
@@ -45,7 +55,7 @@ func Route(r gin.IRouter) {
 		roomSession.StartTime, _ = time.Parse("2006/01/02 15:04:05", "2024/03/09 23:59:59")
 
 		for _, s := range sessions {
-			if s.Room != roomid {
+			if s.Room != roomid && !Include(s.Broadcast, roomid) {
 				continue
 			}
 

@@ -25,6 +25,7 @@ type Session struct {
 	Id        string    `json:"id"`
 	Type      string    `json:"type"`
 	Room      string    `json:"room"`
+	Broadcast []string  `json:"broadcast"`
 	Start     string    `json:"start"`
 	StartTime time.Time `json:"-"`
 	EndTime   time.Time `json:"-"`
