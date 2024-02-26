@@ -15,12 +15,6 @@ type Time struct {
 	End   string `json:"end"`
 }
 
-// PareseTime parse string like "11:30" to time.Time, whose year, month and day are 2024-03-09
-func ParseTime(t string) (time.Time, error) {
-	t = "2024-03-09 " + t + ":00"
-	return time.Parse("2006-01-02 15:04:05", t)
-}
-
 func Route(r gin.IRouter) {
 	file, err := os.ReadFile("sessions.json")
 	if err != nil {
@@ -47,16 +41,29 @@ func Route(r gin.IRouter) {
 		roomid := c.Param("roomid")
 
 		roomSession := session.Session{}
+		// no session is after this time
+		roomSession.StartTime, _ = time.Parse("2006/01/02 15:04:05", "2024/03/09 23:59:59")
 
 		for _, s := range sessions {
 			if s.Room != roomid {
 				continue
 			}
 
-			if time.Now().Before(s.EndTime) && s.StartTime.Before(roomSession.StartTime) {
+			// 2024/03/09 09:00:00
+			now, _ := time.Parse("2006/01/02 15:04:05", "2024/03/09 09:09:00")
+			// now := time.Now()
+
+			if now.Before(s.EndTime) && s.StartTime.Before(roomSession.StartTime) {
 				roomSession = s
 			}
 		}
+
+		if roomSession.Id == "" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "session not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, roomSession)
 	})
 
 	route.POST("/:id", func(c *gin.Context) {
@@ -68,18 +75,21 @@ func Route(r gin.IRouter) {
 		s, ok := sessions[id]
 		if !ok {
 			c.JSON(http.StatusNotFound, gin.H{"error": "session not found"})
+			return
 		}
 
 		s.Start = t.Start
 		s.End = t.End
 
-		s.StartTime, err = ParseTime(t.Start)
+		s.StartTime, err = session.ParseTime(t.Start)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid start time"})
+			return
 		}
-		s.EndTime, err = ParseTime(t.End)
+		s.EndTime, err = session.ParseTime(t.End)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid end time"})
+			return
 		}
 
 		sessions[id] = s

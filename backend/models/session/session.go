@@ -67,7 +67,10 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 			return nil, err
 		}
 		s.Sessions[sessionId].Start = start.Format("15:04")
-		s.Sessions[sessionId].StartTime = start
+		s.Sessions[sessionId].StartTime, err = ParseTime(s.Sessions[sessionId].Start)
+		if err != nil {
+			return nil, err
+		}
 
 		// parse end time
 		end, err := time.Parse(layout, session.End)
@@ -75,7 +78,10 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 			return nil, err
 		}
 		s.Sessions[sessionId].End = end.Format("15:04")
-		s.Sessions[sessionId].EndTime = end
+		s.Sessions[sessionId].EndTime, err = ParseTime(s.Sessions[sessionId].End)
+		if err != nil {
+			return nil, err
+		}
 
 		// session type
 		t, ok := typeString[session.Type]
@@ -88,4 +94,10 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 	}
 
 	return result, err
+}
+
+// PareseTime parse string like "11:30" to time.Time, whose year, month and day are 2024-03-09
+func ParseTime(t string) (time.Time, error) {
+	t = "2024-03-09 " + t + ":00"
+	return time.Parse("2006-01-02 15:04:05", t)
 }
