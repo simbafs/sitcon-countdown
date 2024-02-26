@@ -68,7 +68,11 @@ function Session({ session, setEditor }: { session: TSession; setEditor: setEdit
 			<GridCell>{session.zh.title}</GridCell>
 			<GridCell>
 				<ul className="list-disc pl-6 w-full">
-					{session.speakers.map(speaker => <li key={speaker} className="text-left w-full">{speaker}</li>)}
+					{session.speakers.map(speaker => (
+						<li key={speaker} className="text-left w-full">
+							{speaker}
+						</li>
+					))}
 				</ul>
 			</GridCell>
 		</>
@@ -133,9 +137,11 @@ export default function Page() {
 				<GridCell>End</GridCell>
 				<GridCell>Title</GridCell>
 				<GridCell>Speakers</GridCell>
-				{Object.values(data).sort(sortFn).map(session => (
-					<Session key={session.id} session={session} setEditor={setEditor} />
-				))}
+				{Object.values(data)
+					.sort(sortFn)
+					.map(session => (
+						<Session key={session.id} session={session} setEditor={setEditor} />
+					))}
 			</div>
 		</Admin>
 	)

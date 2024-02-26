@@ -14,7 +14,7 @@
 
 /* Load font at /GenSenRounded-H.ttc */
 @font-face {
-	font-family: "GenSenRounded-H";
+	font-family: 'GenSenRounded-H';
 	font-style: normal;
 	font-weight: 700;
 	src: url('/GenSenRoundedTW-H-01.ttf') format('truetype');
