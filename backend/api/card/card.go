@@ -60,8 +60,8 @@ func Route(r gin.IRouter) {
 			}
 
 			// 2024/03/09 09:00:00
-			now, _ := time.Parse("2006/01/02 15:04:05", "2024/03/09 09:09:00")
-			// now := time.Now()
+			// now, _ := time.Parse("2006/01/02 15:04:05", "2024/03/09 09:09:00")
+			now := time.Now()
 
 			if now.Before(s.EndTime) && s.StartTime.Before(roomSession.StartTime) {
 				roomSession = s

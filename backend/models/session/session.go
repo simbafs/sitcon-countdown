@@ -56,10 +56,15 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 	// clear sessions information
 	result := make(map[string]Session)
 
-	for sessionId, session := range s.Sessions {
+	for _, session := range s.Sessions {
 		// speaker
 		for speakerId, speaker := range session.Speakers {
-			s.Sessions[sessionId].Speakers[speakerId] = speakers[speaker]
+			session.Speakers[speakerId] = speakers[speaker]
+		}
+
+		// custom
+		if session.Id == "439688" {
+			session.Speakers = []string{"主持人 - 侯宜秀秘書長", "與談人 - 孔祥重教授", "卞中佩", "張嘉淵技術長"}
 		}
 
 		// parse start time
@@ -67,8 +72,8 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 		if err != nil {
 			return nil, err
 		}
-		s.Sessions[sessionId].Start = start.Format("15:04")
-		s.Sessions[sessionId].StartTime, err = ParseTime(s.Sessions[sessionId].Start)
+		session.Start = start.Format("15:04")
+		session.StartTime, err = ParseTime(session.Start)
 		if err != nil {
 			return nil, err
 		}
@@ -78,8 +83,8 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 		if err != nil {
 			return nil, err
 		}
-		s.Sessions[sessionId].End = end.Format("15:04")
-		s.Sessions[sessionId].EndTime, err = ParseTime(s.Sessions[sessionId].End)
+		session.End = end.Format("15:04")
+		session.EndTime, err = ParseTime(session.End)
 		if err != nil {
 			return nil, err
 		}
@@ -89,9 +94,9 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 		if !ok {
 			t = session.Type
 		}
-		s.Sessions[sessionId].Type = t
+		session.Type = t
 
-		result[session.Id] = s.Sessions[sessionId]
+		result[session.Id] = session
 	}
 
 	return result, err
