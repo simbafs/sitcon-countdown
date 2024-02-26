@@ -2,9 +2,9 @@ package card
 
 import (
 	"backend/models/session"
+	_ "embed"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -25,12 +25,10 @@ type Time struct {
 	End   string `json:"end"`
 }
 
-func Route(r gin.IRouter) {
-	file, err := os.ReadFile("sessions.json")
-	if err != nil {
-		panic(err)
-	}
+//go:embed sessions.json
+var file []byte
 
+func Route(r gin.IRouter) {
 	sessions, err := session.ParseSessions(file)
 
 	route := r.Group("/card")
