@@ -1,6 +1,7 @@
 package api
 
 import (
+	"backend/api/card"
 	"backend/pkg/websocket"
 	"encoding/json"
 	"log"
@@ -75,6 +76,8 @@ func timer(quit chan struct{}, io websocket.IO) {
 
 func Route(r *gin.Engine, io websocket.IO) {
 	api := r.Group("/api")
+
+	card.Route(api)
 
 	api.GET("/room", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
