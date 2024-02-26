@@ -3,9 +3,12 @@ package api
 import (
 	"backend/api/card"
 	"backend/pkg/websocket"
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -78,6 +81,25 @@ func Route(r *gin.Engine, io websocket.IO) {
 	api := r.Group("/api")
 
 	card.Route(api)
+
+	api.POST("/verify", func(c *gin.Context) {
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(c.Request.Body)
+		token := buf.String()
+
+		fmt.Printf(`"%s" == "%s"`, token, os.Getenv("TOKEN"))
+		fmt.Println()
+
+		if token == os.Getenv("TOKEN") {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "success",
+			})
+		} else {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid token",
+			})
+		}
+	})
 
 	api.GET("/room", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

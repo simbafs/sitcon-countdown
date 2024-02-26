@@ -7,6 +7,7 @@ import { btn } from '@/varients/btn'
 import Link from 'next/link'
 import SetTime from '@/components/setTime'
 import toTime from '@/utils/toTime'
+import { Admin } from '@/components/admin'
 
 function Row({ name, room }: { name: string; room: Room }) {
 	const [open, setOpen] = useState(false)
@@ -81,15 +82,17 @@ export default function Page() {
 	}, [lastMessage])
 
 	return (
-		<div className="min-h-screen w-screen py-[100px] px-[50px] lg:px-[100px] flex flex-col justify-center items-center">
-			<div className="w-full grid gap-[50px]">
-				<Row name="Room 0" room={room0} />
-				<Row name="Room 1" room={room1} />
-				<Row name="Room 2" room={room2} />
-				<Row name="Room 3" room={room3} />
-				<Row name="Room 4" room={room4} />
+		<Admin>
+			<div className="min-h-screen w-screen py-[100px] px-[50px] lg:px-[100px] flex flex-col justify-center items-center">
+				<div className="w-full grid gap-[50px]">
+					<Row name="Room 0" room={room0} />
+					<Row name="Room 1" room={room1} />
+					<Row name="Room 2" room={room2} />
+					<Row name="Room 3" room={room3} />
+					<Row name="Room 4" room={room4} />
+				</div>
+				<h1 className="mt-10 text-2xl">現在時間: {formatTime(time)}</h1>
 			</div>
-			<h1 className="mt-10 text-2xl">現在時間: {formatTime(time)}</h1>
-		</div>
+		</Admin>
 	)
 }

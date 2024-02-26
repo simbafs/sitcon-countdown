@@ -8,6 +8,7 @@ import (
 	"embed"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	flag "github.com/spf13/pflag"
@@ -51,6 +52,8 @@ func main() {
 		fmt.Printf("Version: %s\nCommitHash: %s\nBuildTime: %s\n", Version, CommitHash, BuildTime)
 		return
 	}
+
+	fmt.Printf("token is %s\n", os.Getenv("TOKEN"))
 
 	if err := run(*addr); err != nil {
 		logger.Printf("Oops, there's an error: %v\n", err)

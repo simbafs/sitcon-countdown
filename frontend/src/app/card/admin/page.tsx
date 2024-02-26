@@ -1,6 +1,7 @@
 'use client'
 import useSWR, { mutate } from 'swr'
 import { type setEditor, useEditTime } from '@/components/useEditTime'
+import { Admin } from '@/components/admin'
 
 type TSession = {
 	id: string
@@ -122,7 +123,7 @@ export default function Page() {
 	if (!data) return <h1>Loading...</h1>
 
 	return (
-		<>
+		<Admin>
 			<Editor />
 			<div className="grid grid-cols-7 bg-black gap-[1px] m-4 border border-black">
 				<GridCell>ID</GridCell>
@@ -136,6 +137,6 @@ export default function Page() {
 					<Session key={session.id} session={session} setEditor={setEditor} />
 				))}
 			</div>
-		</>
+		</Admin>
 	)
 }
