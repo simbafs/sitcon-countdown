@@ -65,7 +65,11 @@ function Session({ session, setEditor }: { session: TSession; setEditor: setEdit
 			<GridCell edit={() => edit('start', session.start)}>{session.start}</GridCell>
 			<GridCell edit={() => edit('end', session.end)}>{session.end}</GridCell>
 			<GridCell>{session.zh.title}</GridCell>
-			<GridCell>{session.speakers.join(', ')}</GridCell>
+			<GridCell>
+				<ul className="list-disc pl-6 w-full">
+				{session.speakers.map(speaker => <li key={speaker} className="text-left w-full">{speaker}</li>)}
+				</ul>
+			</GridCell>
 		</>
 	)
 	// return <pre>{JSON.stringify(session, null, 2)}</pre>
