@@ -6,7 +6,7 @@ import toTime from '@/utils/toTime'
 import useWebSocket from 'react-use-websocket'
 
 export default function Home() {
-	const roomid = useQuery('id')[0]
+	const roomid = useQuery('id')
 	const { lastMessage } = useWebSocket(useWsHost(), {
 		shouldReconnect: () => true,
 	})

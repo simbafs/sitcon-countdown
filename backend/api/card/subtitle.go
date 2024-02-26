@@ -2,6 +2,7 @@ package card
 
 import (
 	"backend/models/sessions"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -9,8 +10,8 @@ import (
 )
 
 type Time struct {
-	Start string
-	End   string
+	Start string `json:"start"`
+	End   string `json:"end"`
 }
 
 func Route(r gin.IRouter) {
@@ -48,6 +49,10 @@ func Route(r gin.IRouter) {
 
 		s.Start = t.Start
 		s.End = t.End
+
+		sessions[id] = s
+
+		fmt.Println(s)
 
 		c.JSON(http.StatusOK, s)
 	})
