@@ -16,7 +16,9 @@ export type Card = {
 
 export default function Page() {
 	const sessionId = useQuery('id')
-	const { data, error } = useSWR<Card>(`/api/card/${sessionId}`, url => fetch(url).then(res => res.json()), {
+	const room = useQuery('room')
+	const api_url = sessionId != "" ? `/api/card/${sessionId}` : `/api/card/room/${room}`
+	const { data, error } = useSWR<Card>(api_url, url => fetch(url).then(res => res.json()), {
 		refreshInterval: 500,
 	})
 
