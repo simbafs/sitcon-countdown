@@ -5,12 +5,19 @@ import { useEffect, useState } from 'react'
 import useWsHost from '@/hooks/useWsHost'
 import { btn } from '@/varients/btn'
 import Link from 'next/link'
-import SetTime from '@/components/setTime'
 import toTime from '@/utils/toTime'
 import { Admin } from '@/components/admin'
+import { setEditor, useEditTime } from '@/components/useEditTime'
 
-function Row({ name, room }: { name: string; room: Room }) {
-	const [open, setOpen] = useState(false)
+function Row({ name, room, setTimeEditor }: { name: string; room: Room, setTimeEditor: setEditor }) {
+	const setTime = () => {
+		setTimeEditor(toTime(room.inittime))
+			.then(time => {
+				const [m, s] = time.split(':').map(Number)
+				const t = m * 60 + s
+				room.setTime(t)
+			})
+	}
 	return (
 		<div className="grid gap-4 grid-cols-1 lg:grid-cols-[2fr_4fr]">
 			<div className="grid grid-cols-2 gap-6">
@@ -35,14 +42,13 @@ function Row({ name, room }: { name: string; room: Room }) {
 				<button className={btn({ color: 'yellow' })} onClick={room.reset}>
 					重設
 				</button>
-				<button className={btn({ color: 'yellow' })} onClick={() => setOpen(true)}>
+				<button className={btn({ color: 'yellow' })} onClick={setTime}>
 					設定時間
 				</button>
 				<Link className={btn()} href={`/?id=${room.id}`} target="_blank">
 					開啟頁面
 				</Link>
 			</div>
-			{open && <SetTime room={room} close={() => setOpen(false)} />}
 		</div>
 	)
 }
@@ -56,8 +62,22 @@ function formatTime(time: number) {
 	return `${to2(timeO.getHours())}:${to2(timeO.getMinutes())}:${to2(timeO.getSeconds())}`
 }
 
-export default function Page() {
+function ServerTime() {
 	const [time, setTime] = useState(0)
+	const { lastMessage } = useWebSocket(useWsHost(), {
+		shouldReconnect: () => true,
+	})
+	useEffect(() => {
+		if (!lastMessage) return
+		const data = JSON.parse(lastMessage.data) as { serverTime: number }
+		setTime(data.serverTime)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lastMessage])
+
+	return <h1 className="mt-10 text-2xl">現在時間: {formatTime(time)}</h1>
+}
+
+function Rooms({ setTimeEditor }: { setTimeEditor: setEditor }) {
 	const room0 = useRoom(0)
 	const room1 = useRoom(1)
 	const room2 = useRoom(2)
@@ -77,21 +97,28 @@ export default function Page() {
 		for (let i in data.rooms) {
 			rooms[i].updateRoom(data.rooms[i])
 		}
-		setTime(data.serverTime)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [lastMessage])
 
+	return <div className="w-full grid gap-[50px]">
+		<Row name="Room 0" room={room0} setTimeEditor={setTimeEditor} />
+		<Row name="Room 1" room={room1} setTimeEditor={setTimeEditor} />
+		<Row name="Room 2" room={room2} setTimeEditor={setTimeEditor} />
+		<Row name="Room 3" room={room3} setTimeEditor={setTimeEditor} />
+		<Row name="Room 4" room={room4} setTimeEditor={setTimeEditor} />
+	</div>
+
+}
+
+export default function Page() {
+	const [TimeEditor, setTimeEditor] = useEditTime()
+
 	return (
 		<Admin>
+			<TimeEditor />
 			<div className="min-h-screen w-screen py-[100px] px-[50px] lg:px-[100px] flex flex-col justify-center items-center">
-				<div className="w-full grid gap-[50px]">
-					<Row name="Room 0" room={room0} />
-					<Row name="Room 1" room={room1} />
-					<Row name="Room 2" room={room2} />
-					<Row name="Room 3" room={room3} />
-					<Row name="Room 4" room={room4} />
-				</div>
-				<h1 className="mt-10 text-2xl">現在時間: {formatTime(time)}</h1>
+				<Rooms setTimeEditor={setTimeEditor} />
+				<ServerTime />
 			</div>
 		</Admin>
 	)

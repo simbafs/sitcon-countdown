@@ -62,7 +62,6 @@ export default function useRoom(id: number) {
 			})
 		},
 		setTime(n: number) {
-			if (room.state !== PAUSE) return
 			room.time = room.inittime = n
 			fetch(`/api/room/${id}`, {
 				method: 'post',

@@ -123,7 +123,7 @@ export default function Page() {
 
 	const setServerTime = () => {
 		const t = new Date()
-		setEditor(`${t.getHours()}:${t.getMinutes()}`)
+		setEditor(now || `${t.getHours()}:${t.getMinutes()}`)
 			.then(time => fetch('/api/now/', {
 				method: 'POST',
 				body: time,
