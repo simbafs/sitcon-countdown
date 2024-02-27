@@ -2,6 +2,7 @@ package api
 
 import (
 	"backend/api/card"
+	"backend/api/now"
 	"backend/pkg/websocket"
 	"bytes"
 	"encoding/json"
@@ -81,6 +82,7 @@ func Route(r *gin.Engine, io websocket.IO) {
 	api := r.Group("/api")
 
 	card.Route(api)
+	now.Route(api)
 
 	api.POST("/verify", func(c *gin.Context) {
 		buf := new(bytes.Buffer)
