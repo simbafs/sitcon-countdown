@@ -3,6 +3,8 @@ package api
 import (
 	"backend/api/card"
 	"backend/api/now"
+	aRoom "backend/api/room"
+	"backend/models/room"
 	"backend/pkg/websocket"
 	"bytes"
 	"encoding/json"
@@ -10,59 +12,33 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
-
-const (
-	PAUSE = iota
-	COUNTING
-)
-
-const N = 5
-
-type Room struct {
-	Inittime int `json:"inittime"`
-	Time     int `json:"time"`
-	State    int `json:"state"`
-}
-
-var rooms = make([]Room, N)
-
-func init() {
-	for i := 0; i < N; i++ {
-		rooms[i] = Room{
-			Inittime: 60,
-			Time:     0,
-			State:    PAUSE,
-		}
-	}
-}
 
 func timer(quit chan struct{}, io websocket.IO) {
 	tricker := time.NewTicker(1 * time.Second)
 	for {
 		select {
 		case <-tricker.C:
-			for i, room := range rooms {
-				if room.State == PAUSE {
+			for i, r := range room.Rooms {
+				if r.State == room.PAUSE {
 					continue
 				}
 
-				room.Time -= 1
-				if room.Time <= 0 {
-					room.State = PAUSE
-					room.Time = 0
+				r.Time -= 1
+				if r.Time <= 0 {
+					r.State = room.PAUSE
+					r.Time = 0
 				}
 
-				rooms[i] = room
+				room.Rooms[i] = r
 			}
 			// log.Printf("%#v\n", rooms )
 			// data, err := json.Marshal(rooms)
 			data, err := json.Marshal(gin.H{
-				"rooms":      rooms,
+				"rooms":      room.Rooms,
 				"serverTime": time.Now(),
 			})
 			if err != nil {
@@ -83,6 +59,7 @@ func Route(r *gin.Engine, io websocket.IO) {
 
 	card.Route(api)
 	now.Route(api)
+	aRoom.Route(api)
 
 	api.POST("/verify", func(c *gin.Context) {
 		buf := new(bytes.Buffer)
@@ -101,71 +78,6 @@ func Route(r *gin.Engine, io websocket.IO) {
 				"error": "invalid token",
 			})
 		}
-	})
-
-	api.GET("/room", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"rooms": rooms,
-		})
-	})
-
-	api.GET("/room/:id", func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "failed to parse room id",
-			})
-			return
-		}
-
-		if id >= len(rooms) || id < 0 {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "id is out of range",
-			})
-
-			return
-		}
-
-		room := rooms[id]
-
-		c.JSON(http.StatusOK, gin.H{
-			"room": room,
-		})
-	})
-
-	api.POST("/room/:id", func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "failed to parse room id",
-			})
-			return
-		}
-
-		if id >= len(rooms) || id < 0 {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "id is out of range",
-			})
-
-			return
-		}
-
-		room := Room{}
-
-		if err := c.BindJSON(&room); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		log.Printf("update room %d to %#v\n", id, room)
-
-		rooms[id] = room
-
-		c.JSON(http.StatusOK, gin.H{
-			"message": "success update room",
-		})
 	})
 
 	quit := make(chan struct{})
