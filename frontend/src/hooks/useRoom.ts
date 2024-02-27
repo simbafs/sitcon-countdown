@@ -1,5 +1,4 @@
 import { useEffect, useReducer } from 'react'
-import useWebSocket from 'react-use-websocket'
 
 export const PAUSE = 0
 export const COUNTING = 1
@@ -10,6 +9,7 @@ export type RoomData = {
 	inittime: number
 	time: number
 	state: State
+	name: string
 }
 
 export default function useRoom(id: number) {
@@ -24,6 +24,7 @@ export default function useRoom(id: number) {
 			inittime: 10,
 			time: 0,
 			state: 0,
+			name: '',
 		},
 	)
 

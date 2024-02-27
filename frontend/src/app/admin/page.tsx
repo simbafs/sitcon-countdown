@@ -9,7 +9,7 @@ import toTime from '@/utils/toTime'
 import { Admin } from '@/components/admin'
 import { setEditor, useEditTime } from '@/components/useEditTime'
 
-function Row({ name, room, setTimeEditor }: { name: string; room: Room, setTimeEditor: setEditor }) {
+function Row({room, setTimeEditor }: { room: Room, setTimeEditor: setEditor }) {
 	const setTime = () => {
 		setTimeEditor(toTime(room.inittime))
 			.then(time => {
@@ -21,7 +21,7 @@ function Row({ name, room, setTimeEditor }: { name: string; room: Room, setTimeE
 	return (
 		<div className="grid gap-4 grid-cols-1 lg:grid-cols-[2fr_4fr]">
 			<div className="grid grid-cols-2 gap-6">
-				<h2 className="text-center text-3xl">{name}</h2>
+				<h2 className="text-center text-3xl">{room.name}</h2>
 				<p>{toTime(room.time)}</p>
 			</div>
 			<div className="grid grid-cols-5 gap-6">
@@ -101,11 +101,11 @@ function Rooms({ setTimeEditor }: { setTimeEditor: setEditor }) {
 	}, [lastMessage])
 
 	return <div className="w-full grid gap-[50px]">
-		<Row name="Room 0" room={room0} setTimeEditor={setTimeEditor} />
-		<Row name="Room 1" room={room1} setTimeEditor={setTimeEditor} />
-		<Row name="Room 2" room={room2} setTimeEditor={setTimeEditor} />
-		<Row name="Room 3" room={room3} setTimeEditor={setTimeEditor} />
-		<Row name="Room 4" room={room4} setTimeEditor={setTimeEditor} />
+		<Row room={room0} setTimeEditor={setTimeEditor} />
+		<Row room={room1} setTimeEditor={setTimeEditor} />
+		<Row room={room2} setTimeEditor={setTimeEditor} />
+		<Row room={room3} setTimeEditor={setTimeEditor} />
+		<Row room={room4} setTimeEditor={setTimeEditor} />
 	</div>
 
 }
