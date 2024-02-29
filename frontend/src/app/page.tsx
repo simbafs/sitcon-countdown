@@ -32,5 +32,7 @@ export default function Home() {
 		)
 	}
 
-	return <h1 className="text-[35vw] leading-[0.8]">{getTime(lastMessage, +roomid)}</h1>
+	return <div className="w-screen h-screen grid place-items-center">
+		<h1 className="text-[35vw] leading-[0.8]">{getTime(lastMessage, +roomid)}</h1>
+	</div>
 }
