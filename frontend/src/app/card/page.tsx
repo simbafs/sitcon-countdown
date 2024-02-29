@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import x from '@/img/x.svg'
 import Image from 'next/image'
 import { twMerge } from 'tailwind-merge'
+import { InvalidURL } from './InvalidURL'
 
 export type Card = {
 	type: string
@@ -26,6 +27,8 @@ export default function Page() {
 	})
 
 	useEffect(() => console.log(data), [data])
+
+	if (room == '' && sessionId == '') return <InvalidURL />
 
 	if (error)
 		return (

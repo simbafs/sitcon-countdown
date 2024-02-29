@@ -4,6 +4,7 @@ import { type RoomData } from '@/hooks/useRoom'
 import useWsHost from '@/hooks/useWsHost'
 import toTime from '@/utils/toTime'
 import useWebSocket from 'react-use-websocket'
+import { InvalidURL } from './InvalidURL'
 
 export default function Home() {
 	const roomid = useQuery('id')
@@ -17,11 +18,7 @@ export default function Home() {
 	}
 
 	if (!roomid || isNaN(+roomid)) {
-		return (
-			<>
-				<h1>choose a room id by add querystring `id=0`</h1>
-			</>
-		)
+		return <InvalidURL />
 	}
 
 	if (!lastMessage) {
