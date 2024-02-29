@@ -44,7 +44,7 @@ function Row({ room, setTimeEditor }: { room: Room; setTimeEditor: setEditor }) 
 				<button className={btn({ color: 'yellow' })} onClick={setTime}>
 					設定時間
 				</button>
-				<Link className={btn()} href={`/?id=${room.id}`} target="_blank">
+				<Link className={btn()} href={`/countdown?id=${room.id}`} target="_blank">
 					開啟頁面
 				</Link>
 			</div>
