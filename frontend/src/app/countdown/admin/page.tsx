@@ -9,14 +9,13 @@ import toTime from '@/utils/toTime'
 import { Admin } from '@/components/admin'
 import { setEditor, useEditTime } from '@/components/useEditTime'
 
-function Row({room, setTimeEditor }: { room: Room, setTimeEditor: setEditor }) {
+function Row({ room, setTimeEditor }: { room: Room; setTimeEditor: setEditor }) {
 	const setTime = () => {
-		setTimeEditor(toTime(room.inittime))
-			.then(time => {
-				const [m, s] = time.split(':').map(Number)
-				const t = m * 60 + s
-				room.setTime(t)
-			})
+		setTimeEditor(toTime(room.inittime)).then(time => {
+			const [m, s] = time.split(':').map(Number)
+			const t = m * 60 + s
+			room.setTime(t)
+		})
 	}
 	return (
 		<div className="grid gap-4 grid-cols-1 lg:grid-cols-[2fr_4fr]">
@@ -100,14 +99,15 @@ function Rooms({ setTimeEditor }: { setTimeEditor: setEditor }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [lastMessage])
 
-	return <div className="w-full grid gap-[50px]">
-		<Row room={room0} setTimeEditor={setTimeEditor} />
-		<Row room={room1} setTimeEditor={setTimeEditor} />
-		<Row room={room2} setTimeEditor={setTimeEditor} />
-		<Row room={room3} setTimeEditor={setTimeEditor} />
-		<Row room={room4} setTimeEditor={setTimeEditor} />
-	</div>
-
+	return (
+		<div className="w-full grid gap-[50px]">
+			<Row room={room0} setTimeEditor={setTimeEditor} />
+			<Row room={room1} setTimeEditor={setTimeEditor} />
+			<Row room={room2} setTimeEditor={setTimeEditor} />
+			<Row room={room3} setTimeEditor={setTimeEditor} />
+			<Row room={room4} setTimeEditor={setTimeEditor} />
+		</div>
+	)
 }
 
 export default function Page() {

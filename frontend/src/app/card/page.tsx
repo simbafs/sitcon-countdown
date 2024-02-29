@@ -55,7 +55,9 @@ export default function Page() {
 							{data.start}-{data.end}
 						</h2>
 						<span className="grow" />
-						<h2 className={twMerge("text-[#383839]", speaker.length > 60 ? 'text-[3vw]' : 'text-[4vw]')}>{speaker}</h2>
+						<h2 className={twMerge('text-[#383839]', speaker.length > 60 ? 'text-[3vw]' : 'text-[4vw]')}>
+							{speaker}
+						</h2>
 					</div>
 				</div>
 			</div>

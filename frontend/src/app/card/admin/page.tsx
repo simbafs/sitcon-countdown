@@ -115,27 +115,33 @@ function sortFn(a: TSession, b: TSession) {
 export default function Page() {
 	const { data, error } = useSWR<Record<string, TSession>>('/api/card', url => fetch(url).then(res => res.json()))
 	const [Editor, setEditor] = useEditTime()
-	const { data: now, error: error1 } = useSWR<string>('/api/now/', url => fetch(url)
-		.then(res => res.json())
-		.then(time => `${to2(time.hour)}:${to2(time.minute)}`), {
-		refreshInterval: 500,
-	})
+	const { data: now, error: error1 } = useSWR<string>(
+		'/api/now/',
+		url =>
+			fetch(url)
+				.then(res => res.json())
+				.then(time => `${to2(time.hour)}:${to2(time.minute)}`),
+		{
+			refreshInterval: 500,
+		},
+	)
 
 	const setServerTime = () => {
 		const t = new Date()
 		setEditor(now || `${t.getHours()}:${t.getMinutes()}`)
-			.then(time => fetch('/api/now/', {
-				method: 'POST',
-				body: time,
-			}))
+			.then(time =>
+				fetch('/api/now/', {
+					method: 'POST',
+					body: time,
+				}),
+			)
 			.then(console.log, console.error)
 	}
 
 	const clearServerTime = () => {
 		fetch('/api/now/', {
 			method: 'DELETE',
-		})
-			.then(console.log, console.error)
+		}).then(console.log, console.error)
 	}
 
 	if (error || error1) {
@@ -152,19 +158,21 @@ export default function Page() {
 	return (
 		<Admin>
 			<Editor />
-			<div className="m-4 border-2 border-gray-800 bg-gray-800" >
+			<div className="m-4 border-2 border-gray-800 bg-gray-800">
 				<div className="border-white border-[1px] flex">
 					<button
 						className="bg-gray-800 text-white p-2 hover:bg-gray-700 transition-colors duration-300 ease-in-out border-white border-r-[1px]"
 						onClick={setServerTime}
-					>Set Server Time</button>
+					>
+						Set Server Time
+					</button>
 					<button
 						className="bg-gray-800 text-white p-2 hover:bg-gray-700 transition-colors duration-300 ease-in-out border-white border-r-[1px]"
 						onClick={clearServerTime}
-					>Clear Server Time</button>
-					<div
-						className="bg-gray-800 text-white p-2 w-fit hover:bg-gray-700 transition-colors duration-300 ease-in-out border-white border-r-[1px]"
 					>
+						Clear Server Time
+					</button>
+					<div className="bg-gray-800 text-white p-2 w-fit hover:bg-gray-700 transition-colors duration-300 ease-in-out border-white border-r-[1px]">
 						<p>Server Time: {now}</p>
 					</div>
 				</div>
