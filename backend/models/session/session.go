@@ -64,7 +64,7 @@ func ParseSessions(data []byte) (map[string]Session, error) {
 
 		// custom
 		if session.Id == "439688" {
-			// session.Speakers = []string{"主持人 - 侯宜秀秘書長", "與談人 - 孔祥重教授", "卞中佩教授", "張嘉淵技術長"}
+			session.Speakers = []string{"主持人 - 侯宜秀 律師", "與談人 - 孔祥重 院士", "卞中佩 教授", "張嘉淵 博士"}
 		}
 
 		// parse start time
