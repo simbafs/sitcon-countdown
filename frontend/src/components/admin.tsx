@@ -1,17 +1,15 @@
-import useQuery from '@/hooks/useQuery'
 import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
+import { useLocalStorage } from 'usehooks-ts'
 
 export function Admin({ children }: { children: React.ReactNode }) {
-	const qtoken = useQuery('token')
-	const [token, setToken] = useState('')
+	const [token, setToken] = useLocalStorage('token', '')
 	const [valid, setValid] = useState(false)
 	const [invalid, setInvalid] = useState(false)
 
 	useEffect(() => {
-		setToken(qtoken)
-		verify(qtoken)
-	}, [qtoken])
+		verify(token)
+	}, [])
 
 	const verify = (token: string) => {
 		fetch('/api/verify', {
