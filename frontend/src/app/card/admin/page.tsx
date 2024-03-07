@@ -3,6 +3,7 @@ import useSWR, { mutate } from 'swr'
 import { type setEditor, useEditTime } from '@/components/useEditTime'
 import { Admin } from '@/components/admin'
 import to2 from '@/utils/to2'
+import Link from 'next/link'
 
 type TSession = {
 	id: string
@@ -61,9 +62,9 @@ function Session({ session, setEditor }: { session: TSession; setEditor: setEdit
 
 	return (
 		<>
-			<GridCell>{session.id}</GridCell>
+			<GridCell><Link href={`/card?id=${session.id}`}>{session.id}</Link></GridCell>
 			<GridCell>{session.type}</GridCell>
-			<GridCell>{session.room}</GridCell>
+			<GridCell><Link href={`/card?room=${session.room}`}>{session.room}</Link></GridCell>
 			<GridCell edit={() => edit('start', session.start)}>{session.start}</GridCell>
 			<GridCell edit={() => edit('end', session.end)}>{session.end}</GridCell>
 			<GridCell>{session.zh.title}</GridCell>
